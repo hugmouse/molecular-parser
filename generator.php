@@ -5,12 +5,13 @@
 ** --------------------
 */
 
+
 require "memory.php";
 function readTheFile($path) {
     $handle       = fopen($path, 'r');
     $handleOutput = fopen('output.txt', 'w');
     $i=0;
-    $b=0;
+    $b=-1;
     $atomsamount = 0;
     while(!feof($handle)) {
          $replaced = preg_replace('/\s\s+/', ',', fgets($handle)); // maybe replace with strtr?
@@ -18,24 +19,32 @@ function readTheFile($path) {
          {
            $c = strlen($line);
            $parsedMolLine = explode(",", $line);
+           $test = strlen($line);
             switch ($c) {
                 case $c<=4:
-                    //var_dump($line);
                     $i++;
                     $atomsamount += (int)$c;
                     break;
-                case $c>90:
-                    $p = explode("-", $parsedMolLine[0]); // parsed from $parsedMolLine with "-"
-                    $b++;
-                    $form = $b.';'.$p[0].';'.$p[4].';'.$p[6].';'.$parsedMolLine[1].';'.$parsedMolLine[2].';'.$parsedMolLine[3].';';
-                    break;
+                case $c>96:
+                    //Temporary fix of undefined offsets (line 34)
+                    if($test > 50)
+                    {
+                        $p = explode("-", $parsedMolLine[0]); // parsed from $parsedMolLine with "-"
+                        $b++;
+                        $form = $b.';'.$p[0].';'.$p[1].';'.$p[4].';'.$p[6].';'.$parsedMolLine[1].';'.$parsedMolLine[2].';'.$parsedMolLine[3].';';
+                        break;
+                    }
                 case ($c>20 && $c<90):
-                    $ughjeez = trim($parsedMolLine[3]);
-                    $at   = $parsedMolLine[0].';'.$parsedMolLine[1].';'.$parsedMolLine[2].';'.$ughjeez;
-                    break;
+                    //Temporary fix of undefined offsets (line 42)
+                    if($test != 0)
+                    {
+                        $ughjeez = trim($parsedMolLine[3]);
+                        $at   = $parsedMolLine[0].';'.$parsedMolLine[1].';'.$parsedMolLine[2].';'.$ughjeez;
+                        break;
+                    }
             }
 
-            @$array .= $form.$at.';'.PHP_EOL;
+            $array .= $form.$at.';'.PHP_EOL; // this is a string ok very cool
 
             $bytesize = strlen($array).PHP_EOL;
             if($bytesize < 64) // fixing weird 3 strings on start of algo
@@ -52,6 +61,8 @@ function readTheFile($path) {
            yield $line;
          }
     }
+    fwrite($handleOutput, $array); // Saving last info into a file.
+
     fclose($handle);
     fclose($handleOutput);
     echo "Amount of atoms:     ".$atomsamount,PHP_EOL;
