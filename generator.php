@@ -10,8 +10,9 @@ require "memory.php";
 function readTheFile($path) {
     $handle       = fopen($path, 'r');
     $handleOutput = fopen('output.txt', 'w');
+    fwrite($handleOutput, "MolID;Target;Ligand;Run;Pose;Rank;dG;VS;Atom;X;Y;Z;".PHP_EOL);
     $i=0;
-    $b=-1;
+    $b=-1; // wish granted
     $atomsamount = 0;
     while(!feof($handle)) {
          $replaced = preg_replace('/\s\s+/', ',', fgets($handle)); // maybe replace with strtr?
@@ -44,7 +45,7 @@ function readTheFile($path) {
                     }
             }
 
-            $array .= $form.$at.';'.PHP_EOL; // this is a string ok very cool
+            @$array .= $form.$at.';'.PHP_EOL; // this is a string ok very cool
 
             $bytesize = strlen($array).PHP_EOL;
             if($bytesize < 64) // fixing weird 3 strings on start of algo
