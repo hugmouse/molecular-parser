@@ -44,4 +44,8 @@ MolID;Target;Ligand;Run;Pose;Rank;dG;VS;Atom;X;Y;Z;
 ```
 
 ## Известные ошибки
-* `@$array .= $form.$at.';'.PHP_EOL;`, который создается во время `foreach` вызывает предупреждения типа `undefined variable`.
+~`@$array .= $form.$at.';'.PHP_EOL;`, который создается во время `foreach` вызывает предупреждения типа `undefined variable`.~ 
+
+~Непонятные строки с `;;` в самом начале алгоритма.~
+
+Пофиксил [SysUtils](https://github.com/SysUtils), спасибо ему большое.
